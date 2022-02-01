@@ -1,4 +1,4 @@
-package nodeletconfig
+package config
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 )
 
 type NodeletConfig struct {
-	AllowWorkloadsOnMaster string
+	AllowWorkloadsOnMaster bool
 	CalicoV4Interface      string
 	CalicoV6Interface      string
 	ClusterId              string

@@ -1,4 +1,4 @@
-package nodeletconfig
+package config
 
 const nodeletConfigTmpl = `
 ALLOW_WORKLOADS_ON_MASTER: {{ .AllowWorkloadsOnMaster }}

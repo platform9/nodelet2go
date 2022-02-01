@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	nodeletconfig "github.com/platform9/nodelet2go/pkg/config"
 	"k8s.io/apimachinery/pkg/util/yaml"
-
-	"github.com/platform9/nodelet2go/pkg/nodeletconfig"
 )
 
 type BootstrapConfig struct {
@@ -39,10 +38,11 @@ func CreateCluster(cfgPath string) error {
 		return fmt.Errorf("Failed to Parse Cluster Config: %s", err)
 	}
 
-	_, err := ioutil.ReadFile(clusterCfg.SSHPrivateKeyFile)
+	sshKey, err := ioutil.ReadFile(clusterCfg.SSHPrivateKeyFile)
 	if err != nil {
 		return fmt.Errorf("Failed to read private key: %s", clusterCfg.SSHPrivateKeyFile)
 	}
+	fmt.Printf("Got sshKey: %s", sshKey)
 
 	return nil
 }
