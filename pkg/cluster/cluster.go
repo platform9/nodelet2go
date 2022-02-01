@@ -44,6 +44,11 @@ func CreateCluster(cfgPath string) error {
 	}
 	fmt.Printf("Got sshKey: %s", sshKey)
 
+	if err := GenClusterState(clusterCfg); err != nil {
+		fmt.Printf("Failed to gen NodeletCOnfig: %s", err)
+		return fmt.Errorf("Failed to gen NodeletCOnfig: %s", err)
+	}
+
 	return nil
 }
 
@@ -81,9 +86,30 @@ func GenClusterState(cfg *BootstrapConfig) error {
 		nodeletCfg.CalicoV6Interface = cfg.CalicoV6Interface
 		nodeletCfg.ClusterId = cfg.ClusterId
 		nodeletCfg.HostId = host.NodeName
+		nodeletCfg.MasterIp = cfg.MasterIp
 		nodeletCfg.Mtu = cfg.MTU
 		nodeletCfg.Privileged = cfg.Privileged
 		nodeletCfg.NodeletRole = "master"
+
+		err := nodeletconfig.GenNodeletConfigLocal(nodeletCfg)
+		if err != nil {
+			fmt.Printf("Failed to generate config: %s", err)
+			return fmt.Errorf("Failed to generate config: %s", err)
+		}
+	}
+
+	for _, host := range cfg.WorkerNodes {
+		var nodeletCfg *nodeletconfig.NodeletConfig
+		nodeletCfg = new(nodeletconfig.NodeletConfig)
+		nodeletCfg.AllowWorkloadsOnMaster = cfg.AllowWorkloadsOnMaster
+		nodeletCfg.CalicoV4Interface = cfg.CalicoV4Interface
+		nodeletCfg.CalicoV6Interface = cfg.CalicoV6Interface
+		nodeletCfg.ClusterId = cfg.ClusterId
+		nodeletCfg.HostId = host.NodeName
+		nodeletCfg.MasterIp = cfg.MasterIp
+		nodeletCfg.Mtu = cfg.MTU
+		nodeletCfg.Privileged = cfg.Privileged
+		nodeletCfg.NodeletRole = "worker"
 
 		err := nodeletconfig.GenNodeletConfigLocal(nodeletCfg)
 		if err != nil {

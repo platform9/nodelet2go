@@ -26,7 +26,8 @@ type NodeletConfig struct {
 func GenNodeletConfigLocal(host *NodeletConfig) error {
 	nodeStateDir := filepath.Join(consts.ClusterStateDir, host.ClusterId, host.HostId)
 	if _, err := os.Stat(nodeStateDir); os.IsNotExist(err) {
-		os.MkdirAll(nodeStateDir, 0766)
+		fmt.Printf("Creating node state dir: %s", nodeStateDir)
+		os.MkdirAll(nodeStateDir, 0777)
 	}
 
 	nodeletCfgFile := filepath.Join(nodeStateDir, consts.NodeletConfigFile)
